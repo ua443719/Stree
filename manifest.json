@@ -1,0 +1,15 @@
+{
+  "name": "💌 Baobao",
+  "short_name": "💌 Baobao",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ff77c8",
+  "theme_color": "#ff77c8",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>💌 Will you be my Valentine?</title>
+
+  <!-- ✅ PWA + iPhone App Setup -->
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="💌Baobao">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", cursive;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(to bottom, #ff77c8, #8a4fff);
+      color: white;
+    }
+
+    .heart {
+      font-size: 130px;
+      animation: pulse 1.6s infinite;
+      z-index: 5;
+      position: relative;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .bubble {
+      margin-top: 25px;
+      padding: 22px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 22px;
+      max-width: 390px;
+      font-size: 20px;
+      line-height: 1.4;
+      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+      z-index: 5;
+      position: relative;
+      white-space: pre-line;
+    }
+
+    .dayCount {
+      margin-top: 15px;
+      font-size: 16px;
+      opacity: 0.85;
+      z-index: 5;
+      position: relative;
+    }
+
+    .countdown {
+      margin-top: 10px;
+      font-size: 15px;
+      opacity: 0.75;
+    }
+
+    /* Floating hearts */
+    .floating-heart {
+      position: absolute;
+      font-size: 18px;
+      opacity: 0.6;
+      animation: floatUp linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(110vh); }
+      to { transform: translateY(-10vh); }
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: sparkleFloat linear infinite;
+      z-index: 2;
+    }
+
+    @keyframes sparkleFloat {
+      from { transform: translateY(110vh); opacity: 0.8; }
+      to { transform: translateY(-10vh); opacity: 0; }
+    }
+
+    /* Locked screen */
+    .lockedScreen {
+      font-size: 22px;
+      padding: 25px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 25px;
+      max-width: 360px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.25);
+    }
+
+    /* 🎆 Firework burst */
+    .firework {
+      position: absolute;
+      font-size: 28px;
+      animation: explode 2s ease-out forwards;
+      z-index: 10;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div>
+    <div class="heart">💗</div>
+    <div class="bubble" id="message"></div>
+    <div class="dayCount" id="dayCount"></div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+
+  <script>
+    /***********************
+     💌 YOUR 41 MESSAGES
+    ************************/
+    const messages = [
+      "I am so proud of you babyyyyy 💗\n:¨ ·.· ¨:\n`· . 𐙚",
+      "You are my serotonin machine 𑣲",
+      "We are going to get through this together 💗\nへ   ♡   ╱|、\n૮  -   ՛ )      (`   -  7\n/   ⁻  ៸|       |、⁻〵\n乀 (ˍ, ل ل      じしˍ,)ノ",
+      "∧,,,∧\n( ̳• · • ̳)\n/    づ♡  I love you",
+      "You're going to kill it today my strong independent woman ᕙ( ˵ •̀ ᴗ - ˵ )ᕗ ✧",
+      "You are doing such a good job today sweetheart <3",
+      "You know I love you soooooooo very much  ˗ˋˏ ♡ ˎˊ˗",
+      "Who's my favourite RLA!!!! ♥︎",
+      "This is us 💗\n/)/) (\\(\\\n( . .)  (. . )\n( づ<3⊂ )",
+      "∧,,,∧   ~ ┏━━━━━━━━┓\n(  ̳• · • ̳)   ~ ♡  You’re purrfect   ♡\n/       づ  ~ ┗━━━━━━━━┛",
+      "You are doing soooooo good todayy ♡✧˚ ༘ ⋆｡♡˚",
+      "You feel like home, I don't think I would be sane without you rn (˶ᵔ ᵕ ᵔ˶) ‹𝟹",
+      "I'm insanelyyyyyy in love with you ⸜(｡˃ ᵕ ˂ )⸝♡",
+      "You are the best thing that has ever happened to me ᯓᡣ𐭩",
+      "I'm so lucky to get to be a part of your life ‪‪❤︎‬",
+      "Did you eat at least 2 meals today? 🫵🏻",
+      "I hope your day's going great Miss Pretty Pussy",
+      "(っ˶ ˘ ᵕ˘)ˆᵕ ˆ˶ς) This could be us but somebody's being a lil bitch 🫵🏻",
+      "Thank you for existing, you mean the world to me ‹𝟹",
+      "I need you to know you are loved and appreciate. We are in this together bbg 𓆩🫶🏻𓆪",
+      "You have no idea how proud of you I am for making it sooooooo far. Halfway past the finish line sweetheart. °🦢｡",
+      "My girlfriend is soooooo beautiful farckkkk I need to jerk off to you again ᥬᩤ",
+      "This should be our 2 month anniversary if I calculated right. Congrajulashions for making it this far?",
+      "I'm here for you princess through our ups and downs, till the end ˙ᵕ˙",
+      "I love the fuckkkkkkkk out of you!!!!!!!!!! 💕",
+      "You deserve a break ☕︎",
+      "Dang you're still opening this?",
+      "*Snifffffffff* Where are my used panties eh?",
+      "You're bao bao if I'm bulbul",
+      "BaoBaooooooo I miss youuuuu ;;(",
+      "Dang I wasn't sure you'd even bother opening it this far ahead.",
+      "Who's the best girlfriend in the worlddddd???? This guyyyyyy 🖤⃝🦋𓍯𓂃𓏧♡🫵🏻🫶🏻",
+      "You are my golden brown, texture like sun ♡",
+      "Oi oi OI one more week to freedom ⸜(｡˃ ᵕ ˂)⸝♡",
+      "I'm so grateful to be with you 𑣲",
+      "My girl's so strong, absolute muscle mommy only you are lah ᕙ(⇀‸↼‶)ᕗ",
+      "You are doing soooooooourrrr good bao bao I couldn't be any more proud of you द्दि(ᵔᗜᵔ)",
+      "Get the 💰 bbg I need a Street Triple 765RS",
+      "Nicely done babes द्दि ˉ꒳ˉ )✧",
+      "Wah Wah Wah you've made it to day 40 absolute legend mwaaaaaaahhhhhhhh (˶  >   ₃  < ˶)♡ (Come back tomorrow for your last message.)",
+      "Dear Savithri Viswanathan (baobao),\n\nI'm sooooooo proud of you my love for making it so far...\n\nWith Lou bulbul 𓅪"
+    ];
+
+    /***********************
+     📅 START DATE
+     Day 1 begins Feb 4
+    ************************/
+    const startDate = new Date("2026-02-04T00:00:00");
+
+    const today = new Date();
+    const diffTime = today - startDate;
+    const dayNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const messageBox = document.getElementById("message");
+    const dayCount = document.getElementById("dayCount");
+    const countdownBox = document.getElementById("countdown");
+
+    /***********************
+     ⏳ COUNTDOWN UNTIL MIDNIGHT
+    ************************/
+    function updateCountdown() {
+      const tomorrow = new Date();
+      tomorrow.setHours(24, 0, 0, 0);
+
+      const diff = tomorrow - new Date();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      countdownBox.innerText = `Next message unlocks in: ${hours}h ${mins}m 💌`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 60000);
+
+    /***********************
+     🎆 FIREWORKS ON DAY 41
+    ************************/
+    function fireworkBurst() {
+      const fw = document.createElement("div");
+      fw.classList.add("firework");
+      fw.innerText = "✨🎆✨";
+      fw.style.left = Math.random() * 80 + "vw";
+      fw.style.top = Math.random() * 60 + "vh";
+      document.body.appendChild(fw);
+
+      setTimeout(() => fw.remove(), 2000);
+    }
+
+    /***********************
+     💌 DAILY LOCK SYSTEM
+    ************************/
+    if (dayNumber < 1) {
+      messageBox.innerHTML = `
+        <div class="lockedScreen">
+          💌 Your first message will appear soon…<br><br>
+          Come back on Feb 4 💗
+        </div>
+      `;
+      countdownBox.innerText = "";
+    }
+
+    else if (dayNumber > 41) {
+      messageBox.innerHTML = `
+        <div class="lockedScreen">
+          💖 All messages have been opened.<br><br>
+          But love doesn’t end here.
+        </div>
+      `;
+      countdownBox.innerText = "";
+    }
+
+    else {
+      let savedDay = localStorage.getItem("unlockedDay");
+      if (!savedDay) savedDay = 1;
+      savedDay = parseInt(savedDay);
+
+      if (dayNumber === savedDay + 1) {
+        localStorage.setItem("unlockedDay", dayNumber);
+        savedDay = dayNumber;
+      }
+
+      if (dayNumber > savedDay + 1) {
+        messageBox.innerHTML = `
+          <div class="lockedScreen">
+            💌 Not so fast babyyyyy...<br><br>
+            Come back tomorrow 💗
+          </div>
+        `;
+        countdownBox.innerText = "";
+      } else {
+        messageBox.innerText = messages[savedDay - 1];
+        dayCount.innerText = `Day ${savedDay} of 41`;
+
+        if (savedDay === 41) {
+          setInterval(fireworkBurst, 1200);
+        }
+      }
+    }
+
+    /***********************
+     💗 FLOATING HEARTS
+    ************************/
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("floating-heart");
+      heart.innerText = "💗";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (6 + Math.random() * 6) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 12000);
+    }
+    setInterval(createHeart, 650);
+
+    /***********************
+     ✨ SPARKLES
+    ************************/
+    function createSparkle() {
+      const sparkle = document.createElement("div");
+      sparkle.classList.add("sparkle");
+      sparkle.style.left = Math.random() * 100 + "vw";
+      sparkle.style.animationDuration = (4 + Math.random() * 4) + "s";
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 9000);
+    }
+    setInterval(createSparkle, 250);
+
+  </script>
+
+</body>
+</html>
